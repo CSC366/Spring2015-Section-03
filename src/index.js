@@ -14,6 +14,11 @@ var QuestionViewer = React.createClass({
          }.bind(this)
       });
    },
+   reverse: function() {
+      this.setState(function (currentState) {
+         return {negate: !currentState.negate};
+      });
+   },
    getInitialState: function() {
       return {data: [], searchText: '', filters: {}};
    },
@@ -33,10 +38,10 @@ var QuestionViewer = React.createClass({
             <h2>Questions</h2>
             <div className="col-sm-3">
                <QuestionSearch search={this.state.searchText} onUpdate={this.updateSearch} />
-               <QuestionFilter data={this.state.data} onUpdate={this.updateFilters} />
+               <QuestionFilter data={this.state.data} onNegate={this.reverse} onUpdate={this.updateFilters} />
             </div>
             <div className="col-sm-9">
-               <QuestionList data={this.state.data} search={this.state.searchText} filters={this.state.filters} />
+               <QuestionList data={this.state.data} search={this.state.searchText} filters={this.state.filters} negate={this.state.negate} />
             </div>
          </div>
       );
@@ -70,6 +75,9 @@ var QuestionFilter = React.createClass({
       });
       this.props.onUpdate(checkedKeys);
    },
+   negate: function() {
+      this.props.onNegate();
+   },
    render: function() {
       var keys = {};
       this.props.data.forEach(function (comment) {
@@ -90,6 +98,12 @@ var QuestionFilter = React.createClass({
       return (
          <form ref="filters" style={{"marginBottom": "10px"}}>
             {keywords}
+            <div className="checkbox">
+               <label>
+                  <input type="checkbox" onChange={this.negate} />
+                  Reverse filter effect
+               </label>
+            </div>
          </form>
       );
    }
@@ -99,6 +113,7 @@ var QuestionList = React.createClass({
    render: function() {
       var search = new RegExp(this.props.search);
       var filters = this.props.filters;
+      var negate = this.props.negate;
       var commentNodes = this.props.data.filter(function (comment) {
          if (search.source) {
             return comment.Q.search(search) > -1;
@@ -106,18 +121,18 @@ var QuestionList = React.createClass({
             return true;
          }
       }).filter(function (comment) {
+         var any = false;
          if (Object.keys(filters).length === 0) {
-            return true;
+            any = true;
          }
 
-         var any = false;
          comment.keys.forEach(function (key) {
             if (filters[key]) {
                any = true;
             }
          });
 
-         return any;
+         return any ^ negate;
       }).map(function (comment) {
          return (
             <Question Q={comment.Q} A={comment.A}>
