@@ -14,13 +14,8 @@ var QuestionViewer = React.createClass({
          }.bind(this)
       });
    },
-   reverse: function() {
-      this.setState(function (currentState) {
-         return {negate: !currentState.negate};
-      });
-   },
    getInitialState: function() {
-      return {data: [], searchText: '', filters: {}};
+      return {data: [], searchText: '', filters: {active: {}, enabled: false, negated: false}};
    },
    componentDidMount: function() {
       this.loadCommentsFromServer();
@@ -38,10 +33,10 @@ var QuestionViewer = React.createClass({
             <h2>Questions</h2>
             <div className="col-sm-3">
                <QuestionSearch search={this.state.searchText} onUpdate={this.updateSearch} />
-               <QuestionFilter data={this.state.data} onNegate={this.reverse} onUpdate={this.updateFilters} />
+               <QuestionFilter data={this.state.data} onUpdate={this.updateFilters} />
             </div>
             <div className="col-sm-9">
-               <QuestionList data={this.state.data} search={this.state.searchText} filters={this.state.filters} negate={this.state.negate} />
+               <QuestionList data={this.state.data} search={this.state.searchText} filters={this.state.filters} />
             </div>
          </div>
       );
@@ -66,17 +61,21 @@ var QuestionSearch = React.createClass({
 var QuestionFilter = React.createClass({
    updateFilter: function() {
       var filters = $(this.refs.filters.getDOMNode());
+      var checkbox = $(this.refs.negate.getDOMNode());
+
+      var anySet = false;
       var checkedKeys = {};
       filters.find('input').each(function() {
          var checkbox = $(this);
          if (checkbox.prop('checked')) {
             checkedKeys[checkbox.val()] = true;
+            anySet = true;
          }
       });
-      this.props.onUpdate(checkedKeys);
-   },
-   negate: function() {
-      this.props.onNegate();
+
+      var negated = checkbox.prop('checked');
+
+      this.props.onUpdate({active: checkedKeys, negated: negated, enabled: anySet});
    },
    render: function() {
       var keys = {};
@@ -96,13 +95,17 @@ var QuestionFilter = React.createClass({
          );
       }, this);
       return (
-         <form ref="filters" style={{"marginBottom": "10px"}}>
-            {keywords}
-            <div className="checkbox">
-               <label>
-                  <input type="checkbox" onChange={this.negate} />
-                  Reverse filter effect
-               </label>
+         <form style={{"marginBottom": "10px"}}>
+            <div ref="filters" className="form-group">
+               {keywords}
+            </div>
+            <div className="form-group">
+               <div className="checkbox">
+                  <label>
+                     <input ref="negate" type="checkbox" onChange={this.updateFilter} />
+                     Reverse filter effect
+                  </label>
+               </div>
             </div>
          </form>
       );
@@ -113,7 +116,6 @@ var QuestionList = React.createClass({
    render: function() {
       var search = new RegExp(this.props.search);
       var filters = this.props.filters;
-      var negate = this.props.negate;
       var commentNodes = this.props.data.filter(function (comment) {
          if (search.source) {
             return search.test(comment.Q) || search.test(comment.A);
@@ -121,18 +123,22 @@ var QuestionList = React.createClass({
             return true;
          }
       }).filter(function (comment) {
-         var any = false;
-         if (Object.keys(filters).length === 0) {
-            any = true;
-         }
+         if (filters.enabled) {
+            var any = false;
+            comment.keys.forEach(function (key) {
+               if (filters.active[key]) {
+                  any = true;
+               }
+            });
 
-         comment.keys.forEach(function (key) {
-            if (filters[key]) {
-               any = true;
+            return any ^ filters.negated;
+         } else {
+            if (filters.negated) {
+               return comment.keys.length === 0;
+            }else {
+               return true;
             }
-         });
-
-         return any ^ negate;
+         }
       }).map(function (comment) {
          return (
             <Question comment={comment}>
