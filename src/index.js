@@ -135,7 +135,7 @@ var QuestionList = React.createClass({
          return any ^ negate;
       }).map(function (comment) {
          return (
-            <Question Q={comment.Q} A={comment.A}>
+            <Question comment={comment}>
             </Question>
          );
       });
@@ -152,9 +152,14 @@ var Question = React.createClass({
       return (
          <li className="list-group-item">
             <h3 className="commentAuthor">
-               {this.props.Q}
+               {this.props.comment.Q}
             </h3>
-            {this.props.A}
+            <p>
+            {this.props.comment.A}
+            </p>
+            <div>
+            Keys: {this.props.comment.keys.join(', ')}
+            </div>
          </li>
       );
    }
