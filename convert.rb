@@ -61,8 +61,13 @@ class Converter
       end
    end
 
+   KEYREGEX = /^keys: (.*)$/
    def addKeys line
-      @keys = line.split[1..-1]
+      keypart = KEYREGEX.match line
+      keys = keypart[1].split(',')
+      @keys = keys.map do |key|
+         key.strip
+      end
       finishQuestion
    end
 
