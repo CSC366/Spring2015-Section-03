@@ -1,0 +1,37 @@
+[
+{
+   "Q": "Whose was it?",
+   "A": "His who is gone.",
+   "keys": ["owner", "it"]
+},
+{
+   "Q": "Who shall have it?",
+   "A": "He who will come",
+   "keys": ["recipient", "it"]
+},
+{
+   "Q": "Where was the sun?",
+   "A": "Over the oak.",
+   "keys": ["location"]
+},
+{
+   "Q": "Where was the shadow?",
+   "A": "Under the elm.",
+   "keys": ["location"]
+},
+{
+   "Q": "How was it stepped?",
+   "A": "North by ten and by ten, east by five and by five, south by two and by two, west by one and by one, and so under.",
+   "keys": ["location"]
+},
+{
+   "Q": "What shall we give for it?",
+   "A": "All that is ours.",
+   "keys": ["it", "value"]
+},
+{
+   "Q": "Why should we give it?",
+   "A": "For the sake of the trust.",
+   "keys": ["trust"]
+}
+]
