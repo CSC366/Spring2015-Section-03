@@ -52,7 +52,7 @@ var QuestionSearch = React.createClass({
    render: function() {
       return (
          <form style={{"marginBottom": "10px"}}>
-            <input type="text" ref="searchInput" placeholder="Filter..." value={this.props.search} onChange={this.update} />
+            <input type="text" ref="searchInput" placeholder="Search..." value={this.props.search} onChange={this.update} />
          </form>
       );
    }
