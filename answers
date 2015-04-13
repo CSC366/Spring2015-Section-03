@@ -1,0 +1,539 @@
+Judgments to our discretion
+- Choose what you want
+- See thought process
+- See if the data's there or not
+- Data over not data
+- (Contradictory data?)
+keys: matching, cleaning
+
+Match rules?
+- Two people are the same if every thing about them is exactly the same.
+- Two things are the same if first, last, dob same?
+- Similarity of names
+You'll have to figure out what constitute good match rules for your system.
+Think about it: at what point would you consider two people the same? Everything
+is the same? Just the first and last names and the DOB are the same?
+keys: matching, rules
+
+External libraries/other code
+- Yes, but know what it's doing
+- Comply with Alex's requirements
+- Find similarity between strings ourselves
+- Clean up date--library
+- If intellectual capacity needed, write it ourselves
+- Overall code & code that considers two tuples same needs to be our own
+You're welcome to use external libraries for things like cleaning up dates,
+where it's mostly grunt work. Things that need intellectual input, like matching
+tuples needs to be written by each team.
+keys: libraries, code
+
+Where & how
+- List of national providers
+- Asked people for it
+The data is a munged version of a list of national providers. We got it by
+asking friends for it. We do have a golden key version, but it's not the best
+version possible.
+keys: data
+
+Cleanse addresses
+- Might help
+- Don't need to certify deliverability
+You are free to cleanse the addresses if it helps you in matching records. But
+you definitely don't need to certify deliverability.
+keys: addresses, cleaning
+
+Phone numbers
+- Hardcode formats?
+- Configurable?
+- [n-](nnn) nnn-nnnn[xnnn
+Output phone numbers should be in a format that matches this regular
+expression: `(\d-)?(\(\d{3}\))?\d{3}-\d{4}\[(\d+)?`
+keys: phone, cleaning
+
+English?
+- Names no; not ASCII
+Not all the text involved will be in English, or even in ASCII. Names, in
+particular will not be English in all cases.
+keys: data
+
+Type?
+- Yes, single, indiv. or org?
+A single type will be provided and correct on all records. _Do not merge togther
+records with different types!_
+keys: data, type
+
+
+Names
+- Typos to make identical? Y
+- If two seem to be same person, attach same master key
+There could be typos that make two people have the same name--you'll have to
+figure that out. If two people seem to be the same person, then you'll want to
+attach the same master key to them.
+keys: matching, data
+
+DOB
+- Calendar systems?
+- Assume Gregorian
+- Deal with leap years possibly
+You may assume that the calendar system is Gregorian, as long as you deal with
+leap years properly.
+keys: dates, data
+
+Phone numbers
+- Potentially international
+- What does that mean about the format?
+Phone numbers may potentially be international. You'll need to consider what
+that will mean about the format.
+keys: phone, data
+
+Changes in addresses?
+- Address list file
+- May have duplicates
+- Don't have to represent change of addresses
+- But, do have to figure out that the person is still the same
+- Multiple offices
+- Practice addresses may be in multiple states
+You'll just be creating an address list file which may have duplicate addresses.
+You don't need to represent changes of address, but you will have to figure out
+that the person is still the same. Keep in mind that a practice may have
+multiple offices, and in some places those offices may even be in multiple
+states!
+keys: addresses, data
+
+Will parts be in right fields?
+- Maybe?
+- Some will be more likely to be wrong than others
+- Stenographers will add comments for their own use
+- Blurring from org. names being like location names
+Maybe? Some will be more likely to be wrong than others. It is likely, for
+example, that there will be blurring of organization names into location names.
+For example, if an address is
+~~~
+John Smith
+c/o Sacred Heart Medical Center
+5555 Deep's Lane
+New Orkaen, CA 55555
+~~~
+then it is likely that the "Sacred Heart Medical Center" part will end up in the
+wrong field.  Note as well that stenographers will sometimes add comments for
+their own use in fields that don't make sense.
+key: matching, data
+
+
+Specialty
+- Wierd string
+- Probably lookup table from number to actual name
+The "specialty" for a provider is a weird string containing a number. A lookup
+table to convert from that number to a human-readable description will be
+provided.
+keys: specialties
+
+Required data
+- Type
+- Name
+- Key
+- Nothing else.
+- Secondary & no primary
+- Primary and no secondary
+The only data which is guaranteed to be on every record is its type, a provider
+name, and a key which may be used to reference it. Nothing else is guaranteed.
+In particular, there may be a secondary specialty and no primary specialty, or
+there may be a primary specialty and no secondary specialty.
+keys: data
+
+# 3
+
+Single flat file?
+- Only one file
+The data will be provided as a single flat file. You will be responsible for
+getting it into a database.
+keys: input
+
+Specialty codes
+- Are they valid?
+- Not necessaricarily
+The specialty codes are not necessarily valid. Do not rely on them matching
+anything in the lookup table.
+keys: specialties
+
+Null format
+- Figure it out.
+You'll have to look at the data you're provided in order to determine the format
+of the null values in it.
+keys: data
+
+Indication of time for trustworthiness
+- Whether it's better--up to you
+- Could provide, if we really want it
+- How would you determine if time makes more or less sense?
+If you really want it, we may be able to provide an indication of the age of
+each record. But how would you determine a relationship between a record's age
+and its reliability? Whether it's better would be up to you--we have no hints
+for you on the relative trustworthiness of records from different time periods.
+keys: matching, cleaning
+
+Conflicting information with regard to individual or organization
+- No conflicts here
+- Sole Proprietor
+- **Don't merge individuals and orgs**
+There will be no conflicts between the information in the `type` field. However,
+the information in the `sole proprietor` field is suspect, as with any other
+field besides `type`.
+keys: data, type
+
+Is 9-digit postcode better than 5-digit, or should they all be 5-digit if can't get 9?
+- Be as precise as possible
+- Watch out for junk data in last 4 digits
+Be as precise as possible, but watch out for junk data in the last 4 digits. So
+don't throw away the last four digits of all the postcodes, just because you
+can't get last-four information for some of them.
+keys: addresses
+
+Domain-specific matching rules?
+- Only don't match individuals to orgs
+The only domain-specific matching rule is _don't match individuals to
+organizations._
+keys: matching, rules, type
+
+Other data
+- Needs to be part of ER diagram
+- Know what you're doing ahead of time
+- Reference Data
+- Internet data can also be messy
+- May result in different sub-portions of database
+- Must be declared and modeled in DB
+- Not easy
+You'll need the other data you're planning to use to be part of your ER diagram.
+This means that you'll need to know what you're doing ahead of time. You are
+welcome to use _reference data_, that is, data downloaded from another source,
+in order to attempt to get a better match on the data you're mastering. But this
+will need to be declared and modeled in the database, and, more importantly,
+data from the internet is not guaranteed to be clean or accurate. In fact, this
+is likely to be difficult.
+keys: code
+
+Number of close matches needed to merge?
+- You tell me
+- Depends on client
+- Look at data
+- Where are bad matches coming from
+- Config requirement--shoudl make this easy
+You'll need to decide on the number of close matches between fields you'll
+require in order to consider something a match. You might look at the data and
+where bad matches are coming from in order to give this number a sane value.
+This number typically depends on the client---you'll want to make this number
+configurable so changes aren't overwhelming.
+keys: matching
+
+Data from only one unreliable record
+- Need to be auditable
+- Can throw away if wanted
+You are welcome to throw away data if you determine it's unreliable. Our only
+requirement is that this action be auditable.
+keys: cleaning, matching
+
+# 4
+
+Extract and transformation done?
+- Only client-side
+- Need to do MDM-side--get into our DB
+We've done the extract and transform to get the data out of the client side
+systems. You'll need to do the MDM-side ETL to get the data into your database.
+keys: input
+
+Transformation process
+- Need to be able to convert from flat file to our DB format
+You'll need to be able to convert the flat-file database we'll be providing you
+into something which can be loaded into your database.
+keys: input
+
+Auditing
+- How often?
+- Just for consolidations?
+- Or why a rule was picked?
+- Both
+- Any time a decision affects the outcome of the data
+- Need to be able to see
+- No ambiguity in that process
+You'll need to support auditing both for consolidations of records and for why
+your system picked a specific rule. That is, any time a decision affects the
+outcome of the data, you'll need to be able to see why it happened, with no
+ambiguity.
+keys: auditing
+
+Organizations
+- Mult. addresses they practice at?
+- e.g. Stanford Medical
+- Lots of facilities
+Organizations can definitely have multiple addresses which they practice at. For
+example, consider Stanford Medical. They have tons of facilities with multiple
+addresses.
+keys: data, type, addresses
+
+Missing area code
+- No requirement to supplement like that
+There's no requirement that you be able to supplement the data with things like
+missing area codes or such.
+keys: cleaning
+
+# 5
+Audit log
+- One log per id?
+- If they're interleaved, do they have to be separated out?
+- Need to be chronological?
+- Per team
+- How it's sorted doesn't matter here
+- Per team
+- Need timestamps that will be granular enough to tell how things happened
+- Is a table
+The audit log format will be determined per-team, in order to avoid cramping
+your style. You will need timestamps that
+will be granular enough to show in what order things happened. Store the log in
+a database table, so that it can be easily queried to determine why a decision
+was made. Don't worry about sorting it--that can be done in the queries.
+keys: auditing
+
+Is this process automated
+- Is there a manual pass?
+- Manual decisions for what should be removed or kept?
+- Automated for real run
+- Real versions won't be all automated
+- Trained classifiers acceptable
+The real run should be automated; an actual, professional MDM system wouldn't
+actually be completely automated, but for the purposes of this exercise we want
+your system to be fully automated. However, you are welcome to have, for example,
+manually-trained classifiers for the data.
+keys: code
+
+Is data steward dashboard feasible?
+- EC or part of assignment?
+- Yes
+- Say, these are things that should go together or these are things that shouldn't
+- Extra pointage for this
+- Allows human to audit
+- Technologies allowed
+- Data sometimes so bad that we can't do it without business experience
+- Often steward isn't same person working with spec
+- Not unacceptable to 
+You're welcome to build a data steward dashboard to allow human input to your
+algorithm. This is useful because sometimes the data's so bad that you can't
+figure out what to do with it: it allows a human with business knowledge to
+audit it and tell you what to do with it. Technology choice here is
+free---choose what you will to get the job done. There will be extra pointage
+for this! 
+keys: code
+
+N percent messed with
+- Greater or less than 50%
+We've messed with some amount of the data other than 50%.
+keys: data
+
+No conflicts among types
+- But data won't be better for one type than another
+There won't be conflicting values for the `type` field, but the data is not
+guaranteed to be better for one type than for the other.
+keys: data, type
+
+Key vs results
+- Grade depends on the data
+- Can do better than golden key
+- Relative more important than absolute
+- Make Eric cry--auto A
+Your grade depends on how your data turns out. We do have a golden key, but you
+can do better than it. Your relative performance compared to the other teams
+matters more than your absolute performance. _Ed. note: Dr. Dekhtyar has
+offered an automatic A to any team who can make Eric cry._
+keys: class, grading
+
+# 6
+How does this relate to the topic of the class
+- Not transactional
+- What are the characteristics of this database?
+ - Data warehouse
+ - MDM another kind of DB that you design
+- Taste of building an application from scratch to work with a DB
+- Will still go through steps that we do in class
+- 60% of DB based on description of data
+- Remainder will be the populated remainder of DB
+- Process that we go through is still that in the class
+First, this activity is dealing with another major kind of data that you're
+likely to deal with in industry. The Bakery database is primarily an example of
+_transactional data_, whereas this project will give you an opportunity to work
+with _master data_. Second, this is a good example of another type of database
+that you might be tasked with designing. We've discussed a _data warehouse_---a
+database which stores denormalized data in order to make it easier to do queries
+against it. But that's only one kind of database. The database in this project
+will be another type, and gives you an opportunity to improve your skills
+in working with other types of database. You'll also get a taste of building an
+application from scratch to work with a database. We'll still be going
+through the steps we discuss in class in order to design the database. 60% of
+your database will be based on the description of the data; the remainder will
+be the populated remainder of the database.
+keys: class
+
+Type and name are same
+- Can we assume those are the same?
+- Business rules about how to call matches
+- Rules will be audited; client will determine if the rules are acceptable
+- Missing data does not imply that's a good match
+- Still up to you--audit will handle it
+- Correctness vs faithfulness
+- Correctness: right business rules
+- Faithfulness: Business rules are followed accurately
+- Depends on client
+- Really mad client if wrong, slightly happy if right
+Your business rules will determine how you call matches. The client will audit
+your rules to determine if they're acceptable. The choice of your rules is still
+up to you; the audit will handle ones that aren't good. When writing rules, keep
+in mind that missing data does not imply that a match is a good match. A helpful
+distinction to keep in mind is the difference between _correctness_ and
+_faithfulness_. _Correct_ rules reflect the business rules of the organisation
+you're working with. _Faithful_ execution of those rules implies that your
+program actually follows the rules you've given it. The appropriate balance on
+these factors must depend on the client you're working with. Keep in mind that clients
+will be slightly happy if you can pull off a really tough match, but will be
+furious if you match the wrong things.
+keys: matching
+
+Multiple names and can't distinguish
+- Figure it out
+- Look at data
+Figure it out. Do make sure that you look at the data in order to see what it
+really looks like.
+keys: matching
+
+Preferences on what's in SQL vs Python
+- See creativity
+- Could all be done in DB or not in DB
+- Data needs to be in DB
+- Keep as simple and straightforward as possible
+- Software is not a deliverable
+- Results are the deliverable
+- Reports only deliverable
+- Not responsible to hand code to customer
+You're welcome to put the brains wherever in the system works for you.
+Creativity is encouraged; we really don't mind if you have all the smarts built
+into the database in SQL and stored procedures or if you build the brains in
+another general-purpose programming language. Importantly, keep in mind that the
+software is not a deliverable: only the results are considered the deliverable
+for this class. That is, _you are not required to hand your code to the
+customer._ Before you go and clean all the data by hand, though, keep in mind
+that it will be really hard to make changes to the business rules you used under
+those kind of conditions.
+keys: code
+
+# 7
+.......
+
+
+Conflicting
+- Sometimes things in odd places
+- Birth date might be incorporation
+You will probably see various kinds of conflicts in the data, particularly
+things in odd places. For example, you might find a birth date on an
+organization which represents its incorporation date.
+keys: data
+
+Matching people
+- Just determining how many fields are the same?
+- Weighting on fields--some more valuable than others
+You'll need to weight your matches by field; some fields will carry more weight
+in determining a match than others.
+keys: matching
+
+If DOB has year & switched month and day
+- e.g. 4/6/nnnn
+- Assume that it will be consistent among extended date format (ym&d) (1997-02-08 will always be consistent)
+- Consistent and Gregorian calendar
+You may assume that all the extended dates (dates including day, month, and
+year) will be consistent in their format. Which format that will be we're not
+saying. It will be a Gregorian calendar date, however.
+keys: data, dates
+
+Match rules
+- Want to be able to say match rules are no good
+- Knowing difference between technical and business problems
+- Ask questions once we're seeing the data
+- Problems are often communication
+You'll want to be able to fix or remove match rules that we say are no good.
+Keep in mind the distinction between technical and business problems: realise
+that sometimes it won't be possible to find a technical solution to a business
+problem and you'll need to consult a business expert. You'll find the hardest
+problem is often communication. A word of encouragement: you'll be able to ask
+more questions after seeing the data.
+keys: matching, rules
+
+# 8
+Match lever
+- Sweet feature
+- Would go well with dashboard
+- Not all rules can be quantified like that
+It would be a sweet feature to have a simple slider to tighten or loosen the
+matches; this would go really nicely with that dashboard idea. But keep in mind
+that not all rules can be quantified like that. So you'll have to figure out how
+to handle that.
+keys: matching, rules
+
+How will we be given the rules?
+- Need ability to accommodate custom client rules
+- Rules might all change in week 8
+- How would those be specified?
+- In English
+- Need to handle that way--if these three match, then it's a full match; no match may happen without a last name
+You'll need the capability to handle custom client rules---which might change in
+week eight. They'd be specified in English and you'll need to convert them to
+work in your system. 
+keys: matching, rules
+
+Design patterns for audit records
+- Not for now--don't encroach on creativity
+- Lot of options
+There are lots of options for how to handle the kind of audit requirements we've
+given you. We're not going to suggest any design patterns for now, though---we
+don't want to encroach on your creativity.
+keys: code
+
+Logging
+- Figure out ourselves
+- Format will become publicly available
+- Will be per-group
+You'll need to figure out how you want to do the logging yourselves; the format
+will be publicly available, but you'll be able to make decisions per-group.
+keys: auditing, logging
+
+Change one lab to go from stressing over specifics of use cases to specifics of business rules
+- Part algorithms
+- Part implementing
+One of the labs may get changed from stressing the specifics of use cases to
+dealing with the specifics of business rules.
+keys: class
+
+Output data
+- Format on output?
+- Yes, with data
+- Not super-complicated
+You'll need to format the output data. The format won't be super complicated,
+and you'll get it when you get the input data.
+keys: output
+
+
+
+# Extra
+Audit
+- Who what when why and where
+- Who changed the data
+- What changed
+- What part of pipeline
+- Why the change?
+You'll need to be able to audit the who, what, when, why, and where of the
+actions your code has taken:
+* Who changed the data
+* What changed
+* Where in the pipeline was it changed
+* When did the change happen
+* Why did the change happen
+keys: auditing
+
+Audit cleanse?
+- Before vs after, don't need each rule
+keys: auditing
