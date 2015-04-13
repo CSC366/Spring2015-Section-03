@@ -155,14 +155,13 @@ var QuestionList = React.createClass({
 
 var Question = React.createClass({
    render: function() {
+      var answer = converter.makeHtml(this.props.comment.A);
       return (
          <li className="list-group-item">
             <h3 className="commentAuthor">
                {this.props.comment.Q}
             </h3>
-            <p>
-            {this.props.comment.A}
-            </p>
+            <div dangerouslySetInnerHTML={{__html: answer}} />
             <div>
             Keys: {this.props.comment.keys.join(', ')}
             </div>
