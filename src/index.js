@@ -116,7 +116,7 @@ var QuestionList = React.createClass({
       var negate = this.props.negate;
       var commentNodes = this.props.data.filter(function (comment) {
          if (search.source) {
-            return comment.Q.search(search) > -1;
+            return search.test(comment.Q) || search.test(comment.A);
          } else {
             return true;
          }
