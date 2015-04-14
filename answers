@@ -536,4 +536,6 @@ keys: auditing
 
 Audit cleanse?
 - Before vs after, don't need each rule
-keys: auditing
+Cleaning audits can be more vague. You should record the overall change in the
+record, but you don't need to record every step it took to get there.
+keys: auditing, cleaning
