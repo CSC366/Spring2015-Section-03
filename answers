@@ -539,3 +539,93 @@ Audit cleanse?
 Cleaning audits can be more vague. You should record the overall change in the
 record, but you don't need to record every step it took to get there.
 keys: auditing, cleaning
+
+# 15 Apr 2015
+## Addresses
+Addresses
+- At most one of each practice and mailing 
+- Yes mult source records with same data except address for showing multiple practice locations
+There will be at most one
+
+Uniq. Identfy provider
+- Sourceid
+- Two addresses: practice and mailing
+- uniq. identify address by sourceid and type
+
+How do know if mult addresses are wrong
+- vs. mult practice
+- That's the job
+- MDM
+- Addresses different if their identification is different
+- Different provenance means different addresses
+- Don't want addresses mastered
+
+Master record
+- Maps all sourceids to one master record
+- Multiple addresses from mult sourceids
+- If addresses are clearly different, two addresses
+- How do you handle different apparent spellings of address?
+- Ignore here--don't need
+- Slight misspellings--might be worth fixing
+- Can help matching records together
+
+Provenance
+- Table with two attr: name, title_of_book
+- Name used to uniquely determine the record, so don't blur titles
+
+Can mult people practice at same address
+- Yes -- will happen
+- Dangerous to master addresses across people
+- Don't assocate similar addresses together
+- What happens when addresses cahnge, were merged wrong, etc.
+- Suggest no; won't stop
+
+Mult records determined to be the same person
+- Yes
+- If person is same, give all 
+
+Do you need to be thinking as though there is criminal activity
+- Not currently--but maybe
+- Client doesn't believe fraud is happening
+
+## Specialties
+Kinds
+- Primary & secondary
+- COuld be from mult source and mult times
+- Could be historical
+- Wouldn't be wierd to see mult primary specialties
+- No more than one of primary and secondary on source
+- Mult on master
+- Pick the best one
+- Table might be provided with specialty, description, parent specialty
+- Specialty table isn't always clean
+
+Choose best one
+- and can have multiples
+- Later, see something that makes this make sense
+- Database needs to maintain all possible relationships
+- Report needs to show only one, potentially
+- Final master record has all the specialties associated with it
+- Report may ask to choose some from the master
+- Master record isn't necessarily the complete version of 
+
+Master records
+- Can have more data than will be output
+- Some things will need more than one item, others will need all the possibilities
+- Addresses--multiple
+- Specialties--multiple
+- Phones--multiple
+
+Computed propeties
+- Can get count of sources for a given master
+- May require significant reverse engineering from audits
+- Lots of computation is fine.
+
+Audit
+- Could ask for results of a particular rule's run
+- Could be flat-file
+- Could show which records got merged together
+
+Other things
+- Redesigning
+- 
