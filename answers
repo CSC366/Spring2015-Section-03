@@ -545,12 +545,20 @@ keys: auditing, cleaning
 Addresses
 - At most one of each practice and mailing 
 - Yes mult source records with same data except address for showing multiple practice locations
-There will be at most one
+There will be at most one practice and one mailing address per record. However,
+there may be multiple records per provider in order to have extra addresses.
+They would have the same data except for the address, in order to make it
+easier to find all the addresses which are present for a given practice.
+keys: address, data
 
 Uniq. Identfy provider
 - Sourceid
 - Two addresses: practice and mailing
 - uniq. identify address by sourceid and type
+Providers are uniquely identified by their sourceid. Thus, addresses are
+uniquely identified by their type and the sourceid of the provider they are
+attached to.
+keys: addresses, matching, data
 
 How do know if mult addresses are wrong
 - vs. mult practice
@@ -559,6 +567,14 @@ How do know if mult addresses are wrong
 - Addresses different if their identification is different
 - Different provenance means different addresses
 - Don't want addresses mastered
+You'll have to figure out for yourselves how you'll differentiate between wrong
+addresses and addresses that are different because of different practice
+locations. Keep in mind that we are considering addresses as different if their
+identification is different (see Uniq. Identify Provider). A different
+provenance on two addresses implies that the addresses are themselves different.
+Also remember that we don't expect you to master the addresses.
+keys: addresses, matching
+
 
 Master record
 - Maps all sourceids to one master record
@@ -568,6 +584,10 @@ Master record
 - Ignore here--don't need
 - Slight misspellings--might be worth fixing
 - Can help matching records together
+You'll need to store a map of all the sourceids which went into one master
+record. There may be multiple addresses from multiple sourceids; if two
+addresses are clearly different, they're two addresses.
+keys: matching, auditing
 
 Provenance
 - Table with two attr: name, title_of_book
@@ -579,14 +599,26 @@ Can mult people practice at same address
 - Don't assocate similar addresses together
 - What happens when addresses cahnge, were merged wrong, etc.
 - Suggest no; won't stop
+Multiple people will practice at the same address. It's dangerous to master
+addresses across people. Also, make sure you don't associate similar addresses
+together. We would strongly suggest that you do not attempt to master the
+addresses, although we won't stop you if you do.
+keys: addresses, matching
 
 Mult records determined to be the same person
 - Yes
 - If person is same, give all 
+You might determine that multiple records are the same person. If you decide
+that, merge all the records together per standard procedure.
+keys: matching
 
 Do you need to be thinking as though there is criminal activity
 - Not currently--but maybe
 - Client doesn't believe fraud is happening
+The
+client doesn't currently believe fraud is happening---although, now that you
+mention it, that's not a bad idea for a further challenge!
+keys: data
 
 ## Specialties
 Kinds
@@ -599,6 +631,15 @@ Kinds
 - Pick the best one
 - Table might be provided with specialty, description, parent specialty
 - Specialty table isn't always clean
+Specialties come in two kinds: primary & secondary. Realize that the specialties could be
+from multiple sources and multiple times---some of them may now be historical.
+There could even be multiple primary specialty associated with a particular
+user. There will never be more than one primary and one secondary specialty per
+source record, however. Instead, you will be expected to combine multiple
+records in order to get the complete list of specialties that should be
+associated with the master record. Keep in mind that the specialty table isn't
+always clean itself.
+keys: specialties
 
 Choose best one
 - and can have multiples
@@ -608,6 +649,14 @@ Choose best one
 - Final master record has all the specialties associated with it
 - Report may ask to choose some from the master
 - Master record isn't necessarily the complete version of 
+You should choose the best version of a particular piece of data for the report
+you're creating. The master record should include all the data that you
+have for a particular provider, but the report will potentially only show one
+piece of data. For example, the final master record would have all the
+specialties a provider has, while a report might just include the one which
+appears most often. Another report, however, may include the most general
+specialty associated with a provider.
+keys: output
 
 Master records
 - Can have more data than will be output
@@ -615,16 +664,30 @@ Master records
 - Addresses--multiple
 - Specialties--multiple
 - Phones--multiple
+Some fields will need more than one item stored in the master record. Some may
+even require all the possibilities to be available. For example, you'll need to
+support having multiple addresses and specialties of each type, and you'll need
+to support multiple phones.
+keys: matching, data
 
 Computed propeties
 - Can get count of sources for a given master
 - May require significant reverse engineering from audits
 - Lots of computation is fine.
+It's fine if you need to do lots of computation in order to obtain some of the
+data from other parts of the data in order to produce a report. You may even
+need to do significant reverse-engineering from the audits in order to get some
+data.
+keys: code, output
 
 Audit
 - Could ask for results of a particular rule's run
 - Could be flat-file
 - Could show which records got merged together
+The audit records should be able to answer questions from "what were the results
+caused by this rule," to "which records were merged to create this master
+record?"
+keys: auditing
 
 Other things
 - Redesigning
